@@ -51,7 +51,7 @@ jobs:
       - run:
           name: Assemble release jar
           command: |
-            ./gradlew libJar:assembleRelease    
+            ./gradlew libJar:assemble    
       - store_artifacts:
           # path: app/build/outputs/apk/release/app-release-unsigned.apk
           path: libJar/build/libs/libJar.jar
