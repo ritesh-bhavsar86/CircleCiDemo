@@ -31,7 +31,7 @@ jobs:
               mkdir -p ~/test-results/junit/
               # find . -type f -regex ".*/build/test-results/.*html" -exec cp {} ~/test-results/junit/ \;
               # find . -type f -regex ".*/build/reports/tests/test/.*" -exec cp -R {} ~/test-results/junit/ \;
-              cp -R ".*/build/reports/tests/test/*" ~/test-results/junit/
+              cp -R libJar/build/reports/tests/test/* ~/test-results/junit/
               # libJar/build/reports/tests/test/index.html
           when: always
       - store_test_results:
