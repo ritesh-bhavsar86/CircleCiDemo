@@ -20,6 +20,6 @@ internal class MyLibClassTest{
         var param1 : Int = 4
         var param2 : Int = 3
         // ...then the result should be the expected one.
-        assertThat(7, `is`(param1+param2))
+        assertThat(9, `is`(param1+param2))
     }
 }
