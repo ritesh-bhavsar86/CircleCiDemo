@@ -26,11 +26,23 @@ jobs:
       - android/save-gradle-cache
       - android/save-build-cache
       - run:
-          name: Save test results
+          name: Save test html results
           command: |
               mkdir -p ~/test-results/junit/
               # find . -type f -regex ".*/build/test-results/.*html" -exec cp {} ~/test-results/junit/ \;
               find . -type f -regex ".*/build/reports/tests/test/.*html" -exec cp {} ~/test-results/junit/ \;
+              # libJar/build/reports/tests/test/index.html
+          when: always
+      - store_test_results:
+          path: ~/test-results
+      - store_artifacts:
+          path: ~/test-results/junit
+      - run:
+          name: Save test xml results
+          command: |
+              mkdir -p ~/test-results/junit/
+              find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/test-results/junit/ \;
+              # find . -type f -regex ".*/build/reports/tests/test/.*html" -exec cp {} ~/test-results/junit/ \;
               # libJar/build/reports/tests/test/index.html
           when: always
       - store_test_results:
