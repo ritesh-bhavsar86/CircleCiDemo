@@ -21,7 +21,8 @@ jobs:
       # The next step will run the unit tests
       - android/run-tests:
           # test-command: ./gradlew lint testDebug --continue
-          test-command: ./gradlew testDebug
+          # test-command: ./gradlew testDebug
+          test-command: ./gradlew libJar:test
       - android/save-gradle-cache
       - android/save-build-cache
       - run:
@@ -41,19 +42,19 @@ jobs:
           # system-image: system-images;android-25;google_apis;x86
 
       # And finally run the release build
-      - run:
-          name: Assemble release build
-          command: |
-            ./gradlew assembleRelease    
-      - store_artifacts:
-          path: app/build/outputs/apk/release/app-release-unsigned.apk
+      # - run:
+      #     name: Assemble release build
+      #     command: |
+      #       ./gradlew assembleRelease    
+      # - store_artifacts:
+      #     path: app/build/outputs/apk/release/app-release-unsigned.apk
       # And finally run the release build
-      - run:
-          name: Assemble release jar
-          command: |
-            ./gradlew libJar:assemble    
-      - store_artifacts:
-          path: libJar/build/libs/libJar.jar
+      # - run:
+      #     name: Assemble release jar
+      #     command: |
+      #       ./gradlew libJar:assemble    
+      # - store_artifacts:
+      #     path: libJar/build/libs/libJar.jar
 workflows:
   # Below is the definition of your workflow.
   # Inside the workflow, you provide the jobs you want to run, e.g this workflow runs the build-and-test job above.
