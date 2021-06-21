@@ -34,3 +34,6 @@ dependencies {
     testImplementation "org.robolectric:robolectric:$robolectricVersion"
 //    testImplementation 'com.github.IvanShafran:shared-preferences-mock:1.0'
 }
+afterEvaluate {
+    assemble.dependsOn test
+}
