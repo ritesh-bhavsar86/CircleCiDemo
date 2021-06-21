@@ -1,2 +1,3 @@
+include ':libJar'
 include ':app'
 rootProject.name = "CircleCiDemo"
