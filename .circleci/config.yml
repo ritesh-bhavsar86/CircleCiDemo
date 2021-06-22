@@ -77,10 +77,11 @@ workflows:
   # For more details on extending your workflow, see the configuration docs: https://circleci.com/docs/2.0/configuration-reference/#workflows
   sample: 
     jobs:
+      # Commits to main branch
       - build-and-test:
           filters:
             branches:
-              only: main # Commits to main branch
+              only: master
       # - android-test: # Commits to any branch - skip matrix of devices
       #     filters:
       #       branches:
