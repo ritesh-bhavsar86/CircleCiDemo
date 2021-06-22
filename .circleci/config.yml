@@ -14,42 +14,42 @@ jobs:
       name: android/android-machine
       resource-class: xlarge
     steps:
-      # Checkout the code as the first step.
+      # 1. Checkout the code as the first step.
       - checkout
       - android/restore-gradle-cache
       - android/restore-build-cache
-      # The next step will run the unit tests
+      # 2. The next step will run the unit tests
       - android/run-tests:
           # test-command: ./gradlew lint testDebug --continue
           # test-command: ./gradlew testDebug
           test-command: ./gradlew libJar:test
       - android/save-gradle-cache
       - android/save-build-cache
+      # 3. Saving test results in html format
       - run:
           name: Save test html results
           command: |
-              mkdir -p ~/test-results/junit/
-              # find . -type f -regex ".*/build/test-results/.*html" -exec cp {} ~/test-results/junit/ \;
-              # find . -type f -regex ".*/build/reports/tests/test/.*" -exec cp -R {} ~/test-results/junit/ \;
-              cp -R libJar/build/reports/tests/test/* ~/test-results/junit/
+              mkdir -p ~/test-results/junit/html/
+              cp -R libJar/build/reports/tests/test/* ~/test-results/junit/html/
               # libJar/build/reports/tests/test/index.html
           when: always
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
-          path: ~/test-results/junit
-      - run:
-          name: Save test xml results
-          command: |
-              mkdir -p ~/test-results/junit/
-              find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/test-results/junit/ \;
-              # find . -type f -regex ".*/build/reports/tests/test/.*html" -exec cp {} ~/test-results/junit/ \;
-              # libJar/build/reports/tests/test/index.html
-          when: always
-      - store_test_results:
-          path: ~/test-results
-      - store_artifacts:
-          path: ~/test-results/junit
+          path: ~/test-results/junit/html/
+      # Saving test results in xml format
+      # - run:
+      #     name: Save test xml results
+      #     command: |
+      #         mkdir -p ~/test-results/junit/
+      #         find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/test-results/junit/ \;
+      #         # find . -type f -regex ".*/build/reports/tests/test/.*html" -exec cp {} ~/test-results/junit/ \;
+      #         # libJar/build/reports/tests/test/index.html
+      #     when: always
+      # - store_test_results:
+      #     path: ~/test-results
+      # - store_artifacts:
+      #     path: ~/test-results/junit
 
       # Then start the emulator and run the Instrumentation tests!
       # - android/start-emulator-and-run-tests:
@@ -63,9 +63,9 @@ jobs:
       #       ./gradlew assembleRelease    
       # - store_artifacts:
       #     path: app/build/outputs/apk/release/app-release-unsigned.apk
-      # And finally run the release build
+      # 4. And finally run the release build to generate jar
       - run:
-          name: Assemble release jar
+          name: Build jar
           command: |
             ./gradlew libJar:assemble    
       - store_artifacts:
@@ -77,4 +77,35 @@ workflows:
   # For more details on extending your workflow, see the configuration docs: https://circleci.com/docs/2.0/configuration-reference/#workflows
   sample: 
     jobs:
-      - build-and-test
+      - build-and-test:
+          filters:
+            branches:
+              only: main # Commits to main branch
+      # - android-test: # Commits to any branch - skip matrix of devices
+      #     filters:
+      #       branches:
+      #         ignore: main
+      # - android-test: # Commits to main branch only - run full matrix
+      #     matrix:
+      #       alias: android-test-all
+      #       parameters:
+      #         system-image:
+      #           - system-images;android-30;google_apis;x86
+      #           - system-images;android-29;google_apis;x86
+      #           - system-images;android-28;google_apis;x86
+      #           - system-images;android-27;google_apis;x86
+      #           - system-images;android-26;google_apis;x86
+      #           - system-images;android-25;google_apis;x86
+      #           - system-images;android-24;google_apis;x86
+      #           - system-images;android-23;google_apis;x86
+      #     name: android-test-<<matrix.system-image>>
+      #     filters:
+      #       branches:
+      #         only: main
+      # - release-build:
+      #     requires:
+      #       - unit-test
+      #       - android-test-all
+      #     filters:
+      #       branches:
+      #         only: main # Commits to main branch
