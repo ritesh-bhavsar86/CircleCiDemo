@@ -26,10 +26,25 @@ jobs:
       - android/save-gradle-cache
       - android/save-build-cache
       - run:
-          name: Save test results
+          name: Save test html results
           command: |
               mkdir -p ~/test-results/junit/
-              find . -type f -regex ".*/build/test-results/.*html" -exec cp {} ~/test-results/junit/ \;
+              # find . -type f -regex ".*/build/test-results/.*html" -exec cp {} ~/test-results/junit/ \;
+              # find . -type f -regex ".*/build/reports/tests/test/.*" -exec cp -R {} ~/test-results/junit/ \;
+              cp -R libJar/build/reports/tests/test/* ~/test-results/junit/
+              # libJar/build/reports/tests/test/index.html
+          when: always
+      - store_test_results:
+          path: ~/test-results
+      - store_artifacts:
+          path: ~/test-results/junit
+      - run:
+          name: Save test xml results
+          command: |
+              mkdir -p ~/test-results/junit/
+              find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/test-results/junit/ \;
+              # find . -type f -regex ".*/build/reports/tests/test/.*html" -exec cp {} ~/test-results/junit/ \;
+              # libJar/build/reports/tests/test/index.html
           when: always
       - store_test_results:
           path: ~/test-results
@@ -49,12 +64,12 @@ jobs:
       # - store_artifacts:
       #     path: app/build/outputs/apk/release/app-release-unsigned.apk
       # And finally run the release build
-      # - run:
-      #     name: Assemble release jar
-      #     command: |
-      #       ./gradlew libJar:assemble    
-      # - store_artifacts:
-      #     path: libJar/build/libs/libJar.jar
+      - run:
+          name: Assemble release jar
+          command: |
+            ./gradlew libJar:assemble    
+      - store_artifacts:
+          path: libJar/build/libs/libJar.jar
 workflows:
   # Below is the definition of your workflow.
   # Inside the workflow, you provide the jobs you want to run, e.g this workflow runs the build-and-test job above.
